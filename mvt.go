@@ -3,7 +3,6 @@ package mvt
 // https://github.com/victorspringer/http-cache
 
 import (
-	"context"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -23,25 +22,25 @@ type GetFeaturesCallbackFunc func(*http.Request, string, *maptile.Tile) (map[str
 
 type TileHandlerOptions struct {
 	GetFeaturesCallback GetFeaturesCallbackFunc
+	Simplify            bool
+	Timings             bool
 }
 
 func NewTileHandler(opts *TileHandlerOptions) (http.Handler, error) {
 
 	fn := func(rsp http.ResponseWriter, req *http.Request) {
 
-		ctx := req.Context()
-		ctx, cancel := context.WithCancel(ctx)
-
-		defer cancel()
-
 		logger := slog.Default()
 		logger = logger.With("path", req.URL.Path)
 
-		t1 := time.Now()
+		if opts.Timings {
 
-		defer func() {
-			logger.Debug("Time to process tile", "time", time.Since(t1))
-		}()
+			t1 := time.Now()
+
+			defer func() {
+				logger.Debug("Time to process tile", "time", time.Since(t1))
+			}()
+		}
 
 		layer, t, err := getTileForRequest(req)
 
@@ -61,18 +60,24 @@ func NewTileHandler(opts *TileHandlerOptions) (http.Handler, error) {
 			return
 		}
 
-		t2 := time.Now()
+		if opts.Timings {
 
-		defer func() {
-			logger.Debug("Time to yield MVT", "time", time.Since(t2))
-		}()
+			t2 := time.Now()
+
+			defer func() {
+				logger.Debug("Time to yield MVT", "time", time.Since(t2))
+			}()
+		}
 
 		layers := orb_mvt.NewLayers(collections)
 		layers.ProjectToTile(*t)
 
 		layers.Clip(orb_mvt.MapboxGLDefaultExtentBound)
 
-		layers.Simplify(simplify.DouglasPeucker(1.0))
+		if opts.Simplify {
+			layers.Simplify(simplify.DouglasPeucker(1.0))
+		}
+
 		layers.RemoveEmpty(1.0, 1.0)
 
 		data, err := orb_mvt.Marshal(layers)
@@ -106,19 +111,19 @@ func getTileForRequest(req *http.Request) (string, *maptile.Tile, error) {
 	z, err := strconv.Atoi(m[2])
 
 	if err != nil {
-		return "", nil, err
+		return "", nil, fmt.Errorf("Invalid {z} parameter, %w", err)
 	}
 
 	x, err := strconv.Atoi(m[3])
 
 	if err != nil {
-		return "", nil, err
+		return "", nil, fmt.Errorf("Invalid {x} parameter, %w", err)
 	}
 
 	y, err := strconv.Atoi(m[4])
 
 	if err != nil {
-		return "", nil, err
+		return "", nil, fmt.Errorf("Invalid {y} parameter, %w", err)
 	}
 
 	zm := maptile.Zoom(uint32(z))
