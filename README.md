@@ -31,4 +31,6 @@ func main() {
 
 	http.ListenAndServe(":8080", mux)
 }
-```	
+```
+
+This package does not provide any tile caching or CORS support. That is left to separate middleware handlers like [victorspringer/http-cache](https://github.com/victorspringer/http-cache) or [rs/cors](https://github.com/rs/cors) (or equivalents) respectively.
