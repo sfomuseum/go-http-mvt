@@ -1,0 +1,28 @@
+# github.com/gogo/protobuf v1.3.2
+## explicit; go 1.15
+github.com/gogo/protobuf/proto
+# github.com/paulmach/orb v0.11.1
+## explicit; go 1.15
+github.com/paulmach/orb
+github.com/paulmach/orb/clip
+github.com/paulmach/orb/encoding/mvt
+github.com/paulmach/orb/encoding/mvt/vectortile
+github.com/paulmach/orb/geojson
+github.com/paulmach/orb/internal/length
+github.com/paulmach/orb/internal/mercator
+github.com/paulmach/orb/maptile
+github.com/paulmach/orb/planar
+github.com/paulmach/orb/project
+github.com/paulmach/orb/simplify
+# github.com/paulmach/protoscan v0.2.1
+## explicit; go 1.15
+github.com/paulmach/protoscan
+# go.mongodb.org/mongo-driver v1.11.4
+## explicit; go 1.13
+go.mongodb.org/mongo-driver/bson
+go.mongodb.org/mongo-driver/bson/bsoncodec
+go.mongodb.org/mongo-driver/bson/bsonoptions
+go.mongodb.org/mongo-driver/bson/bsonrw
+go.mongodb.org/mongo-driver/bson/bsontype
+go.mongodb.org/mongo-driver/bson/primitive
+go.mongodb.org/mongo-driver/x/bsonx/bsoncore
