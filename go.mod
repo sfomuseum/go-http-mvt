@@ -2,7 +2,7 @@ module github.com/sfomuseum/go-http-mvt
 
 go 1.23.0
 
-require github.com/paulmach/orb v0.11.1
+require github.com/paulmach/orb v0.12.0
 
 require (
 	github.com/gogo/protobuf v1.3.2 // indirect
